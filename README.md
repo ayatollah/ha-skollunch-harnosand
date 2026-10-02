@@ -16,7 +16,7 @@ Inga krångliga inställningar eller formulär – installera integrationen så 
 
 Klicka på knappen nedan för att öppna repot direkt i din Home Assistant-instans och lägga till det i HACS:
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ayatollah&repository=skollunch-harnosand&category=integration)
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ayatollah&repository=ha-skollunch-harnosand&category=integration)
 
 ### Manuell installation via HACS:
 1. Öppna **HACS** i Home Assistant.
