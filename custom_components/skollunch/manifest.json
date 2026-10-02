@@ -1,0 +1,11 @@
+{
+  "domain": "skollunch",
+  "name": "Skollunch Härnösand",
+  "codeowners": ["@ayatollah"],
+  "config_flow": true,
+  "documentation": "https://skollunch.supergott.com",
+  "issue_tracker": "https://github.com/ayatollah/ha-skollunch-harnosand/issues",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "version": "1.1.0"
+}
