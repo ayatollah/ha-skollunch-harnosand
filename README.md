@@ -1,58 +1,83 @@
 # 🍲 Skollunch Härnösand för Home Assistant
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/default)
-[![GitHub Release](https://img.shields.io/github/v/release/ayatollah/skollunch-harnosand?style=for-the-badge&color=blue)](https://github.com/ayatollah/skollunch-harnosand/releases)
+[![GitHub Release](https://img.shields.io/github/v/release/ayatollah/skollunch-harnosand?style=for-the-badge&color=blue)](https://github.com/ayatollah/ha-skollunch-harnosand/releases)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/ayabolli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-En anpassad Home Assistant-integration som automatiskt hämtar dagens skollunch och vegetariska alternativ för kommunala skolor i Härnösands kommun direkt från [skollunch.supergott.com](https://skollunch.supergott.com).
+En Home Assistant-integration som automatiskt hämtar skollunchen för kommunala skolor i Härnösands kommun direkt från [skollunch.supergott.com](https://skollunch.supergott.com).
 
-Inga krångliga inställningar eller formulär – installera integrationen så skapas sensorer för både grundskola och gymnasium direkt.
+Integrationen ger dig dagens lunch, nästa skoldags meny (hoppar automatiskt helger till måndag), hela innevarande veckomatsedel samt integrerade kalenderentiteter för både grundskola och gymnasium.
 
 ---
 
 ## 🚀 Installation via HACS
 
-Klicka på knappen nedan för att öppna repot direkt i din Home Assistant-instans och lägga till det i HACS:
+Klicka på knappen nedan för att öppna repot direkt i din Home Assistant-instans och installera via HACS:
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ayatollah&repository=ha-skollunch-harnosand&category=integration)
 
 ### Manuell installation via HACS:
 1. Öppna **HACS** i Home Assistant.
 2. Klicka på menyn med tre prickar uppe till höger och välj **Custom repositories**.
-3. Lägg till webbadressen till detta repo: `https://github.com/ayatollah/skollunch-harnosand`
+3. Lägg till webbadressen till detta repo: `https://github.com/ayatollah/ha-skollunch-harnosand`
 4. Välj kategori **Integration** och klicka på **Add**.
 5. Sök upp **Skollunch Härnösand**, klicka på **Download** och starta om Home Assistant.
 6. Gå till **Inställningar** -> **Enheter & tjänster** -> **Lägg till integration**, sök efter **Skollunch Härnösand** och bekräfta.
 
 ---
 
-## 📊 Sensorer och Entiteter
+## 📊 Entiteter
 
-Integrationen skapar automatiskt två sensorer:
+Integrationen sätter automatiskt upp både sensorer och kalendrar:
 
-| Sensor | Entitets-ID | Beskrivning |
+### 1. Sensorer
+
+| Entitet | Typ | Beskrivning |
 |---|---|---|
-| 🍎 **Skollunch Grundskola** | `sensor.skollunch_grundskola` | Dagens rätt för förskolor och F–6/låg- och mellanstadie. |
-| 🍗 **Skollunch Gymnasium** | `sensor.skollunch_gymnasium` | Dagens rätt för 7–9 och Härnösands gymnasium. |
+| `sensor.skollunch_grundskola` | Sensor | Dagens rätt för förskola samt F–6/låg- och mellanstadie. |
+| `sensor.skollunch_gymnasium` | Sensor | Dagens rätt för 7–9/högstadie och gymnasiet. |
 
-### Attribut på sensorerna:
-Varje sensor har följande attribut (`attributes`):
-- `alt_dish`: Dagens vegetariska alternativ (eller specialrätt om angivet).
-- `school_type`: Skoltyp (`grundskola` eller `gymnasium`).
-- `updated_at`: Tidsstämpel för när matsedeln senast synkroniserades från kommunens PDF.
+#### Attribut på sensorerna:
+Varje sensor innehåller rik data för dashboards och automationer:
+* `alt_dish`: Dagens vegetariska alternativ.
+* `tomorrow_dish`: Nästa skoldags rätt (måndagens meny om det är helg).
+* `tomorrow_alt_dish`: Nästa skoldags vegetariska alternativ.
+* `tomorrow_date`: Datum för nästa skoldag (`YYYY-MM-DD`).
+* `week_number`: Aktuellt veckonummer.
+* `week_menu`: Komplett lista med hela veckans rätter (`dayName`, `dateStr`, `dish`, `altDish`).
+* `school_type`: `grundskola` eller `gymnasium`.
+* `updated_at`: Tidsstämpel för när matsedeln senast synkroniserades.
 
 ---
 
-## 💡 Exempel på användning
+### 2. Kalendrar
 
-### 1. Dashboard-kort (Entities / Markdown)
-Visa dagens rätt och vegetariska alternativ snyggt på kylskåpsplattan:
+| Entitet | Typ | Beskrivning |
+|---|---|---|
+| `calendar.skollunch_grundskola_kalender` | Kalender | Visar veckans måltider direkt i Home Assistants kalendervy. |
+| `calendar.skollunch_gymnasium_kalender` | Kalender | Visar gymnasie- och högstadielunchen i kalendervyn. |
+
+---
+
+## 📅 iCalendar-prenumeration (.ics)
+
+Vill du prenumerera på matsedeln direkt i din mobiltelefon (Apple Kalender, Google Kalender eller Outlook) utanför Home Assistant finns färdiga `.ics`-flöden:
+
+* **Grundskola & Förskola:** `https://skollunch.supergott.com/api/lunch/calendar.ics?school=grundskola`
+* **Högstadie & Gymnasium:** `https://skollunch.supergott.com/api/lunch/calendar.ics?school=gymnasium`
+
+---
+
+## 💡 Exempel på användning i Home Assistant
+
+### Dashboard-kort med dagens, morgondagens och veckans mat
+
+Kopiera och klistra in i ett vanligt **Markdown-kort** på din dashboard:
 
 ```yaml
 type: markdown
-title: 🍽️ Veckans Skollunch
+title: 🍽️ Skollunch Grundskola
 content: >
   ### Idag
   **{{ states('sensor.skollunch_grundskola') }}**
@@ -63,48 +88,38 @@ content: >
   *🌱 Veg: {{ state_attr('sensor.skollunch_grundskola', 'tomorrow_alt_dish') }}*
 
   ---
-  ### Hela vecka {{ state_attr('sensor.skollunch_grundskola', 'week_number') }}
+  ### Matsedel vecka {{ state_attr('sensor.skollunch_grundskola', 'week_number') }}
   {% for day in state_attr('sensor.skollunch_grundskola', 'week_menu') %}
   **{{ day.dayName }} ({{ day.dateStr }}):** {{ day.dish }}
   {% endfor %}
 ```
 
-### 2. Morgonnotis via högtalare / TTS
-Säg vad det blir för lunch vid frukostbordet kl 07:15 på vardagar:
+### Kvällsnotis inför morgondagen
 
 ```yaml
-alias: "TTS: Dagens skollunch"
+alias: "Notis: Morgondagens skollunch"
 trigger:
   - platform: time
-    at: "07:15:00"
+    at: "20:00:00"
 condition:
   - condition: time
     weekday:
+      - sun
       - mon
       - tue
       - wed
       - thu
-      - fri
-  - condition: not
-    conditions:
-      - condition: state
-        entity_id: sensor.skollunch_grundskola
-        state: "Ingen skollunch idag"
 action:
-  - action: tts.speak
-    target:
-      entity_id: tts.google_se
+  - action: notify.notify
     data:
-      media_player_entity_id: media_player.kokshogtalare
+      title: "Skollunch imorgon"
       message: >
-        God morgon! Idag serveras det {{ states('sensor.skollunch_grundskola') }} i skolan.
+        Imorgon serveras {{ state_attr('sensor.skollunch_grundskola', 'tomorrow_dish') }} i skolan.
 ```
+---
 
-### ℹ️ Om källan
+## ℹ️ Om källan
+Informationen parsas automatiskt från Härnösands kommuns officiella PDF-matsedlar via webbtjänsten på skollunch.supergott.com. Tjänsten drivs ideellt och har ingen officiell koppling till kommunens förvaltning.
 
-Informationen parsas automatiskt från Härnösands kommuns officiella PDF-matsedlar via backend-tjänsten på skollunch.supergott.com. Tjänsten drivs som ett ideellt projekt och har ingen officiell koppling till kommunens förvaltning.
-
-### ☕ Stöd projektet
+## ☕ Stöd projektet
 Underlättar integrationen vardagslogistiken hemma? Bjud gärna på en kaffe!
-
-
